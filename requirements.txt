@@ -1,0 +1,12 @@
+pip
+attrs
+idna
+multidict
+propcache
+yarl
+aiohttp
+aiosignal
+frozenlist
+aiohappyeyeballs
+discord.py
+python-dotenv
