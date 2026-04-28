@@ -1,9 +1,13 @@
 import discord
 import os
+import random
 
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from connection import keep_alive
+
+keep_alive() #for hosting on render
 load_dotenv()
 
 APP_ID = os.getenv("APPLICATION_ID")
@@ -23,7 +27,15 @@ async def hello(ctx):
 
 @bot.command()
 async def kenny(ctx):
-    await ctx.send("Kenny is a pedophile")
+    message = None
+    temp = random.randint(1, 3)
+    if temp == 3:
+        message = "Kenny is a pedophile"
+    elif temp == 2:
+        message = "Kenny is throwing my elo"
+    else:
+        message = "Glory to the CCP"
+    await ctx.send(message)
 
 @bot.event
 async def on_member_join(member):
