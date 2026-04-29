@@ -23,7 +23,13 @@ async def on_ready():
 
 @bot.command()
 async def hello(ctx):
-    await ctx.send("Hello!")
+    message = None
+    temp = random.randint(1,100)
+    if temp <= 5:
+        message = "What is up wiggers, chiggers, and ni-"
+    else:
+        message = "Hello!"
+    await ctx.send(message)
 
 @bot.command()
 async def kenny(ctx):
