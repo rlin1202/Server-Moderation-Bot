@@ -1,6 +1,8 @@
 import discord
 import os
 import random
+import asyncio
+import datetime
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -43,13 +45,19 @@ async def kenny(ctx):
         message = "Glory to the CCP"
     await ctx.send(message)
 
+@bot.command()
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx, amount: int):
+    await ctx.channel.purge(limit=amount)
+
+
 @bot.event
 async def on_member_join(member):
-    general_channel =  await bot.fetch_channel(1387976715711545379)
+    general_channel =  await bot.fetch_channel(1499773897858486325)
     print(f"{member.name} has joined")
     msg = discord.Embed(
         title="Welcome to Tribe slapahoe",
-        description=f"{member.name} has arrived on tribe slapahoe"
+        description=f"{member.mention} has arrived on tribe slapahoe"
     )
     msg.set_thumbnail(url=member.avatar.url)
     msg.set_footer(text="Enjoy your stay!")
@@ -58,11 +66,11 @@ async def on_member_join(member):
 
 @bot.event
 async def on_member_remove(member):
-    general_channel = await bot.fetch_channel(1387976715711545379)
+    general_channel = await bot.fetch_channel(1499773897858486325)
     print(f"{member.name} has left")
     msg = discord.Embed(
         title= f"Goodbye {member.name} :(",
-        description=f"{member.name} has been banished from tribe slapahoe"
+        description=f"{member.mention} has left tribe slapahoe"
     )
     msg.set_thumbnail(url=member.avatar.url)
     msg.set_footer(text="You will be missed!")
