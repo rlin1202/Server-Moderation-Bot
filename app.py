@@ -2,7 +2,7 @@ import discord
 import os
 import random
 import asyncio
-import datetime
+from datetime import datetime, timedelta,timezone
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -48,7 +48,21 @@ async def kenny(ctx):
 @bot.command()
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount: int):
-    await ctx.channel.purge(limit=amount)
+    old_time = datetime.now(timezone.utc) - timedelta(days=14)
+    new_msg = []
+    old_msg =[]
+    async for messages in ctx.channel.history(limit=amount):
+        if messages.created_at < old_time:
+            old_msg.append(messages)
+        else:
+            new_msg.append(messages)
+
+    if new_msg:
+        await ctx.channel.delete_messages(new_msg)
+
+    for message in old_msg:
+        await message.delete()
+        await asyncio.sleep(1)
 
 
 @bot.event
