@@ -26,16 +26,23 @@ async def on_ready():
 @bot.command(aliases=["Hello"])
 async def hello(ctx):
     message = None
-    if ctx.author.id == 369867812942118933:
-        message = "What is up wiggers, chiggers, and ni-"
-    elif ctx.author.id == 541452192046120981:
-        message = f"{ctx.author.mention} stop throwing my elo"
-    elif ctx.author.id == 404070206835785729:
-        message = "You're short"
-    elif ctx.author.id == 612043297510129702:
-        message = "Fuck you"
-    else:
+    rand_num = random.randint(1,2)
+    if rand_num == 1:
         message = "Hello!"
+    else:
+        if ctx.author.id == 369867812942118933:
+            message = "What is up wiggers, chiggers, and ni-"
+        elif ctx.author.id == 541452192046120981:
+            message = f"{ctx.author.mention} stop throwing my elo"
+        elif ctx.author.id == 404070206835785729:
+            message = "You're short"
+        elif ctx.author.id == 612043297510129702:
+            message = "Fuck you"
+        elif ctx.author.id == 485842835027787818:
+            message = "Can a nigga borrow a fry"
+        elif ctx.author.id == 301037329651597321:
+            message = "Can you spot me some food pls"
+
     await ctx.send(message)
 
 @bot.command(aliases=["Kenny"])
