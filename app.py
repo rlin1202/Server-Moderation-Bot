@@ -16,12 +16,22 @@ APP_ID = os.getenv("APPLICATION_ID")
 PUBLIC_KEY = os.getenv("PUBLIC_KEY")
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 
+caleb = 369867812942118933
+kennu = 541452192046120981
+cat = 404070206835785729
+ryan = 612043297510129702
+christian = 485842835027787818
+kevin = 301037329651597321
+
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='$',intents=intents)
 
 @bot.event
 async def on_ready():
+    general_channel = await bot.fetch_channel(1499773897858486325)
     print(f'logged in as {bot.user}')
+    await general_channel.send("Hello, This is Ryan's bot. Please Bare with him as he sucks at programming")
+
 
 @bot.command(aliases=["Hello"])
 async def hello(ctx):
@@ -30,17 +40,17 @@ async def hello(ctx):
     if rand_num == 1:
         message = "Hello!"
     else:
-        if ctx.author.id == 369867812942118933:
+        if ctx.author.id == caleb:
             message = "What is up wiggers, chiggers, and ni-"
-        elif ctx.author.id == 541452192046120981:
+        elif ctx.author.id == kennu:
             message = f"{ctx.author.mention} stop throwing my elo"
-        elif ctx.author.id == 404070206835785729:
+        elif ctx.author.id == cat:
             message = "You're short"
-        elif ctx.author.id == 612043297510129702:
+        elif ctx.author.id == ryan:
             message = "Fuck you"
-        elif ctx.author.id == 485842835027787818:
+        elif ctx.author.id == christian:
             message = "Can a nigga borrow a fry"
-        elif ctx.author.id == 301037329651597321:
+        elif ctx.author.id == kevin:
             message = "Can you spot me some food pls"
 
     await ctx.send(message)
