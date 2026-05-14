@@ -16,12 +16,21 @@ APP_ID = os.getenv("APPLICATION_ID")
 PUBLIC_KEY = os.getenv("PUBLIC_KEY")
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 
+caleb = 369867812942118933
+kennu = 541452192046120981
+cat = 404070206835785729
+ryan = 612043297510129702
+christian = 485842835027787818
+kevin = 301037329651597321
+
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='$',intents=intents)
 
 @bot.event
 async def on_ready():
+    general_channel = await bot.fetch_channel(1498406471744884776)
     print(f'logged in as {bot.user}')
+    await general_channel.send("Hello, This is Ryan's bot. Please bare with him as he sucks at programming")
 
 @bot.command(aliases=["Hello"])
 async def hello(ctx):
@@ -30,17 +39,17 @@ async def hello(ctx):
     if rand_num == 1:
         message = "Hello!"
     else:
-        if ctx.author.id == 369867812942118933:
+        if ctx.author.id == caleb:
             message = "What is up wiggers, chiggers, and ni-"
-        elif ctx.author.id == 541452192046120981:
+        elif ctx.author.id == kennu:
             message = f"{ctx.author.mention} stop throwing my elo"
-        elif ctx.author.id == 404070206835785729:
+        elif ctx.author.id == cat:
             message = "You're short"
-        elif ctx.author.id == 612043297510129702:
+        elif ctx.author.id == ryan:
             message = "Fuck you"
-        elif ctx.author.id == 485842835027787818:
+        elif ctx.author.id == christian:
             message = "Can a nigga borrow a fry"
-        elif ctx.author.id == 301037329651597321:
+        elif ctx.author.id == kevin:
             message = "Can you spot me some food pls"
 
     await ctx.send(message)
@@ -83,7 +92,7 @@ async def kick_error(ctx, error):
     else:
         await ctx.channel.send("ERROR: UNKNOWN")
 
-@bot.command(aliases=["Clear"])
+@bot.command(aliases=["Clear","purge","Purge"])
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount: int):
     cmd = ctx.channel.last_message
@@ -112,7 +121,7 @@ async def clear(ctx, amount: int):
 #user join and leave
 @bot.event
 async def on_member_join(member):
-    general_channel =  await bot.fetch_channel(1499773897858486325)
+    welcome_channel =  await bot.fetch_channel(1499773897858486325)
     print(f"{member.name} has joined")
     msg = discord.Embed(
         title="Welcome to Tribe slapahoe",
@@ -121,11 +130,11 @@ async def on_member_join(member):
     msg.set_thumbnail(url=member.avatar.url)
     msg.set_footer(text="Enjoy your stay!")
 
-    await general_channel.send(content=f"Welcome to tribe slapahoe {member.mention}",embed=msg)
+    await welcome_channel.send(content=f"Welcome to tribe slapahoe {member.mention}",embed=msg)
 
 @bot.event
 async def on_member_remove(member):
-    general_channel = await bot.fetch_channel(1499773897858486325)
+    welcome_channel = await bot.fetch_channel(1499773897858486325)
     print(f"{member.name} has left")
     msg = discord.Embed(
         title= f"Goodbye {member.name} :(",
@@ -134,7 +143,7 @@ async def on_member_remove(member):
     msg.set_thumbnail(url=member.avatar.url)
     msg.set_footer(text="You will be missed!")
 
-    await general_channel.send(content=f"Goodbye {member.mention}",embed=msg)
+    await welcome_channel.send(content=f"Goodbye {member.mention}",embed=msg)
 
 bot.run(AUTH_TOKEN)
 
