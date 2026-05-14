@@ -28,10 +28,9 @@ bot = commands.Bot(command_prefix='$',intents=intents)
 
 @bot.event
 async def on_ready():
-    general_channel = await bot.fetch_channel(1499773897858486325)
+    general_channel = await bot.fetch_channel(1498406471744884776)
     print(f'logged in as {bot.user}')
-    await general_channel.send("Hello, This is Ryan's bot. Please Bare with him as he sucks at programming")
-
+    await general_channel.send("Hello, This is Ryan's bot. Please bare with him as he sucks at programming")
 
 @bot.command(aliases=["Hello"])
 async def hello(ctx):
@@ -88,7 +87,7 @@ async def kick_error(ctx, error):
     else:
         await ctx.channel.send("ERROR: UNKNOWN")
 
-@bot.command(aliases=["Clear"])
+@bot.command(aliases=["Clear","purge","Purge"])
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount: int):
     cmd = ctx.channel.last_message
@@ -117,7 +116,7 @@ async def clear(ctx, amount: int):
 #user join and leave
 @bot.event
 async def on_member_join(member):
-    general_channel =  await bot.fetch_channel(1499773897858486325)
+    welcome_channel =  await bot.fetch_channel(1499773897858486325)
     print(f"{member.name} has joined")
     msg = discord.Embed(
         title="Welcome to Tribe slapahoe",
@@ -126,11 +125,11 @@ async def on_member_join(member):
     msg.set_thumbnail(url=member.avatar.url)
     msg.set_footer(text="Enjoy your stay!")
 
-    await general_channel.send(content=f"Welcome to tribe slapahoe {member.mention}",embed=msg)
+    await welcome_channel.send(content=f"Welcome to tribe slapahoe {member.mention}",embed=msg)
 
 @bot.event
 async def on_member_remove(member):
-    general_channel = await bot.fetch_channel(1499773897858486325)
+    welcome_channel = await bot.fetch_channel(1499773897858486325)
     print(f"{member.name} has left")
     msg = discord.Embed(
         title= f"Goodbye {member.name} :(",
@@ -139,7 +138,7 @@ async def on_member_remove(member):
     msg.set_thumbnail(url=member.avatar.url)
     msg.set_footer(text="You will be missed!")
 
-    await general_channel.send(content=f"Goodbye {member.mention}",embed=msg)
+    await welcome_channel.send(content=f"Goodbye {member.mention}",embed=msg)
 
 bot.run(AUTH_TOKEN)
 
