@@ -49,12 +49,17 @@ async def hello(ctx):
 async def kenny(ctx):
     kennu = await ctx.guild.fetch_member(541452192046120981)
     message = None
-    temp = random.randint(1, 3)
-    if temp == 3:
+    temp = random.randint(1, 5)
+    if temp == 1:
         message = f"{kennu.mention} is a pedophile"
     elif temp == 2:
         message = f"{kennu.mention} stop throwing my elo"
-
+    elif temp == 3:
+        message = f"{kennu.mention} check your fire with civilians"
+    elif temp == 4:
+        message = f"{kennu.mention} is full extended in kids"
+    elif temp == 5:
+        message = f"{kennu.mention}: Epstein's #1 soldier"
     await ctx.send(message)
 
 #moderation commands
