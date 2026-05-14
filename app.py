@@ -24,7 +24,7 @@ christian = 485842835027787818
 kevin = 301037329651597321
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='$',intents=intents)
+bot = commands.Bot(command_prefix='!',intents=intents)
 
 @bot.event
 async def on_ready():
@@ -35,22 +35,20 @@ async def on_ready():
 @bot.command(aliases=["Hello"])
 async def hello(ctx):
     message = None
-    rand_num = random.randint(1,2)
-    if rand_num == 1:
-        message = "Hello!"
+    if ctx.author.id == caleb:
+        message = "What is up wiggers, chiggers, and ni-"
+    elif ctx.author.id == kennu:
+        message = f"{ctx.author.mention} stop throwing my elo"
+    elif ctx.author.id == cat:
+        message = "You're short"
+    elif ctx.author.id == ryan:
+        message = "Fuck you"
+    elif ctx.author.id == christian:
+        message = "Can a nigga borrow a fry"
+    elif ctx.author.id == kevin:
+        message = "Can you spot me some food pls"
     else:
-        if ctx.author.id == caleb:
-            message = "What is up wiggers, chiggers, and ni-"
-        elif ctx.author.id == kennu:
-            message = f"{ctx.author.mention} stop throwing my elo"
-        elif ctx.author.id == cat:
-            message = "You're short"
-        elif ctx.author.id == ryan:
-            message = "Fuck you"
-        elif ctx.author.id == christian:
-            message = "Can a nigga borrow a fry"
-        elif ctx.author.id == kevin:
-            message = "Can you spot me some food pls"
+        message = "Hello!"
 
     await ctx.send(message)
 
