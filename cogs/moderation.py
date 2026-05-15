@@ -66,16 +66,22 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=["Timeout"])
     @commands.has_permissions(moderate_members=True)
-    async def timeout(self, ctx, member: discord.Member, amount: int = 30, unit: str = "seconds", *, reason):
+    async def timeout(self, ctx, member: discord.Member, amount: int = 30, unit: str = "seconds", *, reason: str = None):
         time_out_until = None
-        if unit == "days":
+        if unit == "days" or unit == "d":
             time_out_until = datetime.now(timezone.utc) + timedelta(days=amount)
-        elif unit == "minutes":
+        elif unit == "hours" or unit == "hr":
+            time_out_until = datetime.now(timezone.utc) + timedelta(hours=amount)
+        elif unit == "minutes" or unit == "min" or unit == "m":
             time_out_until = datetime.now(timezone.utc) + timedelta(minutes=amount)
-        elif unit == "seconds":
+        elif unit == "seconds" or unit == "sec" or unit == "s":
             time_out_until = datetime.now(timezone.utc) + timedelta(seconds=amount)
-        await ctx.send(f"{member} has been timed out for {amount} {unit}. Reason: {reason}")
+        else:
+            await ctx.send("ERROR: ARGUMENT NOT RECOGNIZED")
+            return
+
         await member.timeout(time_out_until)
+        await ctx.send(f"{member} has been timed out for {amount} {unit}. Reason: {reason}")
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))
