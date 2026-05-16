@@ -19,13 +19,13 @@ class Funny(commands.Cog):
     async def hello(self,ctx):
         message = None
         if ctx.author.id == caleb:
-            message = "What is up wiggers, chiggers, and ni-"
+            message = "**What is up wiggers, chiggers, and ni-**"
         elif ctx.author.id == kennu:
-            message = f"{ctx.author.mention} stop throwing my elo"
+            message = f"{ctx.author.mention} **stop throwing my elo**"
         elif ctx.author.id == cat:
-            message = "You're short"
+            message = "**You're short**"
         elif ctx.author.id == ryan:
-            message = "Fuck you"
+            message = "**Fuck you**"
         elif ctx.author.id == christian:
             message = "Can a nigga borrow a fry"
         elif ctx.author.id == kevin:
