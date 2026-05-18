@@ -26,8 +26,10 @@ class Moderation(commands.Cog):
 
     @kick.error
     async def kick_error(self,ctx, error):
-        if isinstance(error, (commands.MissingPermissions, discord.Forbidden)):
-            await ctx.channel.send("ERROR: MISSING PERMISSIONS")
+        if isinstance(error,commands.MissingPermissions):
+            await ctx.channel.send("ERROR: BOT IS MISSING PERMISSIONS")
+        elif isinstance(error, discord.Forbidden):
+            await ctx.channel.send("ERROR: USER DOES NOT HAVE PROPER PERMISSIONS")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.channel.send("ERROR: SPECIFY MEMBER TO KICK")
         elif isinstance(error, commands.MemberNotFound):
@@ -39,7 +41,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def clear(self,ctx, amount: int):
         if amount < 1:
-            ctx.channel.send("ERROR: INVALID ARGUMENT")
+            await ctx.channel.send("ERROR: INVALID ARGUMENT")
             return
         cmd = ctx.channel.last_message
         await cmd.delete()
@@ -67,21 +69,41 @@ class Moderation(commands.Cog):
     @commands.command(aliases=["Timeout"])
     @commands.has_permissions(moderate_members=True)
     async def timeout(self, ctx, member: discord.Member, amount: int = 30, unit: str = "seconds", *, reason: str = "None provided"):
+        current_time = datetime.now(timezone.utc)
+        max_time_out = current_time + timedelta(days=28)
         time_out_until = None
         if unit == "days" or unit == "d":
-            time_out_until = datetime.now(timezone.utc) + timedelta(days=amount)
+            time_out_until = current_time + timedelta(days=amount)
         elif unit == "hours" or unit == "hr":
-            time_out_until = datetime.now(timezone.utc) + timedelta(hours=amount)
+            time_out_until = current_time + timedelta(hours=amount)
         elif unit == "minutes" or unit == "min" or unit == "m":
-            time_out_until = datetime.now(timezone.utc) + timedelta(minutes=amount)
+            time_out_until = current_time + timedelta(minutes=amount)
         elif unit == "seconds" or unit == "sec" or unit == "s":
-            time_out_until = datetime.now(timezone.utc) + timedelta(seconds=amount)
+            time_out_until = current_time + timedelta(seconds=amount)
         else:
             await ctx.send("ERROR: ARGUMENT NOT RECOGNIZED")
             return
 
-        await member.timeout(time_out_until)
-        await ctx.send(f"{member} has been timed out for {amount} {unit}. Reason: {reason}")
+        if time_out_until > max_time_out:
+            await ctx.channel.send("ERROR: DURATION EXCEEDS 28 DAY MAXIMUM")
+        elif ctx.author.top_role < member.top_role:
+            await ctx.channel.send("ERROR: INAPPROPRIATE PERMISSIONS")
+        else:
+            await member.timeout(time_out_until)
+            await ctx.send(f"{member} has been timed out for {amount} {unit}. Reason: {reason}")
+
+    @timeout.error
+    async def timeout_error(self,ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.channel.send("ERROR: BOT IS MISSING PERMISSIONS")
+        elif isinstance(error, discord.Forbidden):
+            await ctx.channel.send("ERROR: USER DOES NOT HAVE PROPER PERMISSIONS")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.channel.send("ERROR: SPECIFY MEMBER TO TIMEOUT")
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.channel.send("ERROR: MEMBER NOT FOUND")
+        else:
+            await ctx.channel.send("ERROR: UNKNOWN")
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))
