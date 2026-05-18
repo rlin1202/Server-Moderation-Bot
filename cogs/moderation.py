@@ -17,7 +17,7 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=["Kick"])
     @commands.has_permissions(kick_members=True)
-    async def kick(self,ctx, member: discord.Member, *, reason=None):
+    async def kick(self,ctx, member: discord.Member, *, reason: str = "None provided"):
         if ctx.author.top_role > member.top_role:
             await member.kick(reason=reason)
             await ctx.send(f"{member} has been kicked, reason: {reason}")
@@ -66,7 +66,7 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=["Timeout"])
     @commands.has_permissions(moderate_members=True)
-    async def timeout(self, ctx, member: discord.Member, amount: int = 30, unit: str = "seconds", *, reason: str = None):
+    async def timeout(self, ctx, member: discord.Member, amount: int = 30, unit: str = "seconds", *, reason: str = "None provided"):
         time_out_until = None
         if unit == "days" or unit == "d":
             time_out_until = datetime.now(timezone.utc) + timedelta(days=amount)
