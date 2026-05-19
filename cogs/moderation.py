@@ -88,6 +88,8 @@ class Moderation(commands.Cog):
             await ctx.channel.send("ERROR: DURATION EXCEEDS 28 DAY MAXIMUM")
         elif ctx.author.top_role < member.top_role:
             await ctx.channel.send("ERROR: INAPPROPRIATE PERMISSIONS")
+        elif member.is_timed_out():
+            await ctx.channel.send("ERROR: MEMBER HAS ALREADY BEEN TIMED OUT")
         else:
             await member.timeout(time_out_until)
             await ctx.send(f"{member} has been timed out for {amount} {unit}. Reason: {reason}")
@@ -104,6 +106,24 @@ class Moderation(commands.Cog):
             await ctx.channel.send("ERROR: MEMBER NOT FOUND")
         else:
             await ctx.channel.send("ERROR: UNKNOWN")
+
+    @commands.command(aliases=["Ban"])
+    @commands.has_permissions(ban_members=True)
+    async def ban(self,ctx, member: discord.Member, *, reason: str = "None provided"):
+        if ctx.author.top_role > member.top_role:
+            await member.ban(reason=reason,delete_message_days=7)
+            await ctx.send(f"{member} has been banned for {reason}")
+        else:
+            await ctx.send("ERROR: INAPPROPRIATE PERMISSIONS")
+
+    @commands.command(aliases=["Unban"])
+    @commands.has_permissions(ban_members=True)
+    async def unban(self,ctx, member_id: str):
+
+        user = await self.bot.fetch_user(int(member_id))
+        print(f"unbanning {user}")
+        await ctx.guild.unban(user)
+        await ctx.send(f"{user} has been unbanned")
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))
