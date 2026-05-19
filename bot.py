@@ -15,7 +15,6 @@ APP_ID = os.getenv("APPLICATION_ID")
 PUBLIC_KEY = os.getenv("PUBLIC_KEY")
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 
-
 bot = commands.Bot(command_prefix='!',intents=discord.Intents.all())
 
 async def main():
