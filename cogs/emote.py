@@ -7,25 +7,25 @@ import re
 class Emote(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command(name="import", aliases=["Import"])
-    @commands.has_permissions(manage_emojis=True)
-    async def import_emote(self, ctx, name: str, url:str):
-        if not url:
-            if ctx.message.attachments:
-                image = ctx.message.attachments[0].url
-            else:
-                ctx.send("ERROR: PLEASE PROVIDE URL OR ATTACHMENT")
-        elif not name:
-            await ctx.send("ERROR: NAME REQUIRED")
+    async def fetch_image(self,ctx,url:str):
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
                     print(f"Failed to grab image, response-status: {response.status}")
-                    await ctx.send("ERROR: IMAGE COULD NOT BE FETCHED")
-                    return
+                    return None
                 else:
-                    image = await response.read()
+                    return await response.read()
+
+    @commands.command(name="import", aliases=["Import"])
+    @commands.has_permissions(manage_emojis=True)
+    async def import_emote(self, ctx, name: str, url:str):
+        image = None
+        if url:
+            image = await self.fetch_image(ctx, url)
+        elif ctx.message.attachments:
+            image = await self.fetch_image(ctx, ctx.message.attachments[0].url)
+        else:
+            ctx.send("ERROR: IMAGE COULD NOT BE FETCHED")
         emote = await ctx.guild.create_custom_emoji(name=name, image=image)
         await ctx.send(f"EMOTE: {emote} added")
 
