@@ -1,6 +1,8 @@
 import asyncio
+from encodings.aliases import aliases
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from datetime import datetime, timedelta,timezone
 
@@ -15,7 +17,7 @@ class Moderation(commands.Cog):
         print(f'logged in as {self.bot.user}')
         await general_channel.send("Hello, This is Ryan's bot. Please bare with him as he sucks at programming")
 
-    @commands.command(aliases=["Kick"])
+    @app_commands.command(name="kick", description="/kick @<user> reason(optional)")
     @commands.has_permissions(kick_members=True)
     async def kick(self,ctx, member: discord.Member, *, reason: str = "None provided"):
         if ctx.author.top_role > member.top_role:
@@ -37,7 +39,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.channel.send("ERROR: UNKNOWN")
 
-    @commands.command(aliases=["Clear", "purge", "Purge"])
+    @app_commands.command(name="clear",description="/clear <message amount>")
     @commands.has_permissions(manage_messages=True)
     async def clear(self,ctx, amount: int):
         if amount < 1:
@@ -66,7 +68,7 @@ class Moderation(commands.Cog):
         await asyncio.sleep(3)
         await confirmation_msg.delete()
 
-    @commands.command(aliases=["Timeout"])
+    @app_commands.command(name="timeout",description="/timeout @<user> time(will default to 30 seconds) reason(optional)")
     @commands.has_permissions(moderate_members=True)
     async def timeout(self, ctx, member: discord.Member, amount: int = 30, unit: str = "seconds", *, reason: str = "None provided"):
         current_time = datetime.now(timezone.utc)
@@ -107,7 +109,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.channel.send("ERROR: UNKNOWN")
 
-    @commands.command(aliases=["Ban"])
+    @app_commands.command(name="ban",description="/ban @<user> reason(optional)")
     @commands.has_permissions(ban_members=True)
     async def ban(self,ctx, member: discord.Member, *, reason: str = "None provided"):
         if ctx.author.top_role > member.top_role:
@@ -116,7 +118,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("ERROR: INAPPROPRIATE PERMISSIONS")
 
-    @commands.command(aliases=["Unban"])
+    @app_commands.command(name="unban",description="/unban @<user> reason(optional)")
     @commands.has_permissions(ban_members=True)
     async def unban(self,ctx, member_id: str):
 

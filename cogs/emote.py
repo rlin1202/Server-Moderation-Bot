@@ -1,6 +1,7 @@
 import uuid
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 import aiohttp
 import re
@@ -12,7 +13,7 @@ class Emote(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="import", aliases=["Import"])
+    @app_commands.command(name="import", description="/import name(emote name) image_url")
     @commands.has_permissions(manage_emojis=True)
     async def import_emote(self, ctx, name:str,url: str):
         async with aiohttp.ClientSession() as session:
@@ -26,7 +27,7 @@ class Emote(commands.Cog):
         await ctx.send(f"emote: {emote} added")
 
 
-    @commands.command(aliases=["Copy"])
+    @app_commands.command(name="copy",description="/copy name(emote name) desired_emote")
     @commands.has_permissions(manage_emojis=True)
     async def copy(self, ctx, name: str, emote:str):
         match = re.match(r"<(a?):(\w+):(\d+)>", emote)

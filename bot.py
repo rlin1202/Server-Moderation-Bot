@@ -5,25 +5,26 @@ import os
 
 from discord.ext import commands
 from dotenv import load_dotenv
-
+from discord import app_commands
 from connection import keep_alive
 
 keep_alive() #for hosting on render
 load_dotenv()
 
-APP_ID = os.getenv("APPLICATION_ID")
-PUBLIC_KEY = os.getenv("PUBLIC_KEY")
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 
-bot = commands.Bot(command_prefix='!',intents=discord.Intents.all())
+class DiscordBot(commands.Bot):
+    def __init__(self):
+        super().__init__(intents=discord.Intents.all(),command_prefix="/")
+
+    async def setup_hook(self):
+        for filename in os.listdir("./cogs"):
+            if filename.endswith("py"):
+                await self.load_extension(f"cogs.{filename[:-3]}")
+        await self.tree.sync()
 
 async def main():
-    async with bot:
-        for filename in os.listdir("./cogs"):
-            if filename.endswith(".py"):
-                await bot.load_extension(f"cogs.{filename[:-3]}")
-                print(f"loaded cog {filename}")
-        await bot.start(AUTH_TOKEN)
+    bot = DiscordBot()
+    await bot.start(AUTH_TOKEN)
 
 asyncio.run(main())
-
