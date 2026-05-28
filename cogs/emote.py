@@ -1,8 +1,12 @@
+import uuid
+
 import discord
 from discord.ext import commands
 import aiohttp
 import re
 
+SUPPORTED_FORMAT = {"image/png","image/jpeg","image/gif","image/webp"}
+MAX_SIZE = 256 * 1024
 
 class Emote(commands.Cog):
     def __init__(self, bot):
@@ -10,19 +14,17 @@ class Emote(commands.Cog):
 
     @commands.command(name="import", aliases=["Import"])
     @commands.has_permissions(manage_emojis=True)
-    async def import_emote(self, ctx, name: str, url:str):
-        image = None
-        if url:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    if response.status != 200:
-                        print(f"Failed to grab image, response-status: {response.status}")
-                        ctx.send("ERROR: IMAGE COULD NOT BE FETCHED")
-                        return
-                    else:
-                        image = response.read()
+    async def import_emote(self, ctx, name:str,url: str):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                if response.status != 200:
+                    print(f"image could not be fetched, status: {response.status}")
+                    ctx.send(f"image could not be fetched")
+                    return
+                image = await response.read()
         emote = await ctx.guild.create_custom_emoji(name=name, image=image)
-        await ctx.send(f"EMOTE: {emote} added")
+        await ctx.send(f"emote: {emote} added")
+
 
     @commands.command(aliases=["Copy"])
     @commands.has_permissions(manage_emojis=True)

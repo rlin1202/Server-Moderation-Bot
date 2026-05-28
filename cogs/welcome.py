@@ -32,5 +32,9 @@ class Welcome(commands.Cog):
 
         await welcome_channel.send(content=f"Goodbye {member.mention}", embed=msg)
 
+    @commands.command(aliases=["Hello"])
+    async def hello(self,ctx):
+        await ctx.send("Hello!")
+
 async def setup (bot):
     await bot.add_cog(Welcome(bot))
