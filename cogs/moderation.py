@@ -17,6 +17,8 @@ class Moderation(commands.Cog):
         print(f'logged in as {self.bot.user}')
         await general_channel.send("Hello, This is Ryan's bot. Please bare with him as he sucks at programming")
 
+    #Add when user gets kicked we create a record in pg to keep track of information
+    #generate a id for the case, user_id, moderator_id, type of action, reason, and set expires at to NULL
     @app_commands.command(name="kick", description="/kick @<user> reason(optional)")
     @commands.has_permissions(kick_members=True)
     async def kick(self,ctx, member: discord.Member, *, reason: str = "None provided"):

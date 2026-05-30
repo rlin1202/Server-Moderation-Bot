@@ -36,5 +36,10 @@ class Welcome(commands.Cog):
     async def hello(self,ctx):
         await ctx.send("Hello!")
 
+    @commands.command()
+    async def dbtest(self, ctx):
+        version = await self.bot.db.fetchval("SELECT version();")
+        await ctx.send(version)
+
 async def setup (bot):
     await bot.add_cog(Welcome(bot))
