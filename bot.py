@@ -26,12 +26,11 @@ class DiscordBot(commands.Bot):
         # looks through the files in the cogs folder and returns a list of the filenames
         for filename in os.listdir("./cogs"):
             #looks for files that end in py and then loads the cogs ignoring the .py
-            if filename.endswith("py"):
+            if filename.endswith(".py"):
                 await self.load_extension(f"cogs.{filename[:-3]}")
         #for slash commands that integrate with discord api, this locally syncs everything
         #global syncs take sometime up to an hour so we only use this for testing purposes
-        guild = await self.fetch_guild(1387976713874444288)
-        await self.tree.sync(guild=guild)
+        await self.tree.sync()
 
 async def main():
     bot = DiscordBot()

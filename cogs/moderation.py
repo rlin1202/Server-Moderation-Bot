@@ -2,6 +2,8 @@ import asyncio
 from encodings.aliases import aliases
 
 import discord
+
+from util.db import add_infraction,add_server_info
 from discord import app_commands
 from discord.ext import commands
 from datetime import datetime, timedelta,timezone
@@ -13,9 +15,15 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        general_channel = await self.bot.fetch_channel(1498406471744884776)
-        print(f'logged in as {self.bot.user}')
-        await general_channel.send("Hello, This is Ryan's bot. Please bare with him as he sucks at programming")
+        print(f"logged in as {self.bot.user}")
+
+    @commands.Cog.listener()
+    async def on_guild_join(self,guild):
+        guild_channel = guild.system_channel
+        if not guild_channel:
+            guild_channel = next((ch for ch in guild.text_channels if ch.permissions_for(guild.me).send_messages),None)
+        server_id = await add_server_info(self.bot.db,guild.id,guild_channel.id)
+        print(f"joined server:{server_id}")
 
     #Add when user gets kicked we create a record in pg to keep track of information
     #generate a id for the case, user_id, moderator_id, type of action, reason, and set expires at to NULL
@@ -128,6 +136,16 @@ class Moderation(commands.Cog):
         print(f"unbanning {user}")
         await ctx.guild.unban(user)
         await ctx.send(f"{user} has been unbanned")
+
+    @app_commands.command(name="change_welcome",description="change default channel")
+    @commands.has_permissions(manage_channels=True)
+    async def change_welcome(self,interaction: discord.Interaction,channel_id: int):
+        channel = await interaction.guild.fetch_channel(channel_id)
+
+        await interaction.guild.edit(system_channel=channel)
+        await interaction.channel.send(f"default channel has been changed to {channel.name}")
+
+
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))

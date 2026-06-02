@@ -1,4 +1,5 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 
@@ -32,11 +33,11 @@ class Welcome(commands.Cog):
 
         await welcome_channel.send(content=f"Goodbye {member.mention}", embed=msg)
 
-    @commands.command(aliases=["Hello"])
-    async def hello(self,ctx):
-        await ctx.send("Hello!")
+    @app_commands.command(name="hello",description="Hello!")
+    async def hello(self,interaction:discord.Interaction):
+        await interaction.channel.send("Hello!")
 
-    @commands.command()
+    @app_commands.command(name="dbtest",description="Test db connection")
     async def dbtest(self, ctx):
         version = await self.bot.db.fetchval("SELECT version();")
         await ctx.send(version)
