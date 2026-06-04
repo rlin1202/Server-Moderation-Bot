@@ -30,7 +30,8 @@ class DiscordBot(commands.Bot):
                 await self.load_extension(f"cogs.{filename[:-3]}")
         #for slash commands that integrate with discord api, this locally syncs everything
         #global syncs take sometime up to an hour so we only use this for testing purposes
-        await self.tree.sync()
+        guild = discord.Object(id=1387976713874444288)
+        await self.tree.sync(guild=guild)
 
 async def main():
     bot = DiscordBot()

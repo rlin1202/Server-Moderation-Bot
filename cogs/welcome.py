@@ -34,13 +34,13 @@ class Welcome(commands.Cog):
         await welcome_channel.send(content=f"Goodbye {member.mention}", embed=msg)
 
     @app_commands.command(name="hello",description="Hello!")
-    async def hello(self,interaction:discord.Interaction):
+    async def hello(self, interaction: discord.Interaction):
         await interaction.channel.send("Hello!")
 
     @app_commands.command(name="dbtest",description="Test db connection")
-    async def dbtest(self, ctx):
+    async def dbtest(self, interaction: discord.Interaction):
         version = await self.bot.db.fetchval("SELECT version();")
-        await ctx.send(version)
+        await interaction.channel.send(version)
 
 async def setup (bot):
     await bot.add_cog(Welcome(bot))
