@@ -15,24 +15,24 @@ class Emote(commands.Cog):
 
     @app_commands.command(name="import", description="/import name(emote name) image_url")
     @commands.has_permissions(manage_emojis=True)
-    async def import_emote(self, ctx, name:str,url: str):
+    async def import_emote(self, interaction: discord.Interaction, name:str,url: str):
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
                     print(f"image could not be fetched, status: {response.status}")
-                    ctx.send(f"image could not be fetched")
+                    interaction.response.send_message(f"image could not be fetched",ephemeral=True)
                     return
                 image = await response.read()
-        emote = await ctx.guild.create_custom_emoji(name=name, image=image)
-        await ctx.send(f"emote: {emote} added")
+        emote = await interaction.channel.guild.create_custom_emoji(name=name, image=image)
+        await interaction.response.send_message(f"emote: {emote} added")
 
 
     @app_commands.command(name="copy",description="/copy name(emote name) desired_emote")
     @commands.has_permissions(manage_emojis=True)
-    async def copy(self, ctx, name: str, emote:str):
+    async def copy(self, interaction: discord.Interaction, name: str, emote:str):
         match = re.match(r"<(a?):(\w+):(\d+)>", emote)
         if not match:
-            await ctx.send("ERROR: PLEASE PROVIDE A VALID CUSTOM EMOTE")
+            await interaction.response.send_message("ERROR: PLEASE PROVIDE A VALID CUSTOM EMOTE",ephemeral=True)
             return
 
         ext = "png"
@@ -45,19 +45,12 @@ class Emote(commands.Cog):
             async with session.get(url) as response:
                 if response.status != 200:
                     print(f"Failed to grab image, response-status: {response.status}")
-                    await ctx.send("ERROR: IMAGE COULD NOT BE FETCHED")
+                    await interaction.response.send_message("ERROR: IMAGE COULD NOT BE FETCHED",ephemeral=True)
                     return
                 else:
                     image = await response.read()
-        emote = await ctx.guild.create_custom_emoji(name=name, image=image)
-        await ctx.send(f"EMOTE: {emote} added")
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("ERROR: BOT IS MISSING PERMISSIONS")
-        elif isinstance(error, discord.Forbidden):
-            await ctx.send("ERROR: USER DOES NOT HAVE PROPER PERMISSIONS")
+        emote = await interaction.guild.create_custom_emoji(name=name, image=image)
+        await interaction.response.send_message(f"EMOTE: {emote} added")
 
 async def setup(bot):
     await bot.add_cog(Emote(bot))

@@ -19,7 +19,7 @@ class Welcome(commands.Cog):
         msg.set_footer(text="Enjoy your stay!")
 
         await welcome_channel.send(content=f"Welcome to tribe slapahoe {member.mention}", embed=msg)
-
+    
     @commands.Cog.listener()
     async def on_member_remove(self,member):
         welcome_channel = await self.bot.fetch_channel(1499773897858486325)
@@ -35,12 +35,16 @@ class Welcome(commands.Cog):
 
     @app_commands.command(name="hello",description="Hello!")
     async def hello(self, interaction: discord.Interaction):
-        await interaction.channel.send("Hello!")
+        await (interaction.response.send_message("Hello!"))
+
+    @app_commands.command(name="link", description="Provides link to invite bot")
+    async def link(self, interaction: discord.Interaction):
+        await interaction.response.send_message("https://discord.com/oauth2/authorize?client_id=1493243323509375207")
 
     @app_commands.command(name="dbtest",description="Test db connection")
     async def dbtest(self, interaction: discord.Interaction):
         version = await self.bot.db.fetchval("SELECT version();")
-        await interaction.channel.send(version)
+        await interaction.response.send_message(version)
 
 async def setup (bot):
     await bot.add_cog(Welcome(bot))
