@@ -20,14 +20,23 @@ async def add_server_info(pool,server_id: int, welcome_channel: int):
     query = """
             INSERT INTO servers(
                 server_id,
-                welcome_channel,
+                welcome_channel
             )
             VALUES ($1,$2)
             RETURNING server_id;
     """
     return await pool.fetchval(query,server_id,welcome_channel)
 
-async def add_infraction(pool,member_id,server_id, moderator_id, type, reason, expires_at:datetime = None):
+async def fetch_welcome_channel(pool, server_id: int):
+    query = """
+        SELECT welcome_channel
+        FROM servers
+        WHERE server_id = $1
+    """
+
+    return await pool.fetchval(query,server_id)
+
+async def add_infraction(pool,member_id,server_id, moderator_id, type, reason, expires_at:datetime = None, active:bool = False):
     query = """
             INSERT INTO infractions(
                 member_id,
@@ -35,11 +44,12 @@ async def add_infraction(pool,member_id,server_id, moderator_id, type, reason, e
                 moderator_id,
                 type,
                 reason,
-                expires_at
+                expires_at,
+                active
             )
-            VALUES($1,$2,$3,$4,$5,$6)
+            VALUES($1,$2,$3,$4,$5,$6,$7)
             RETURNING infraction_id
     """
-    return await pool.fetchval(query,member_id,server_id,moderator_id,type,reason,expires_at)
+    return await pool.fetchval(query,member_id,server_id,moderator_id,type,reason,expires_at,active)
 
 

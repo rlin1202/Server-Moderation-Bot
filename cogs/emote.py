@@ -1,5 +1,3 @@
-import uuid
-
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -14,13 +12,13 @@ class Emote(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="import", description="/import name(emote name) image_url")
-    @commands.has_permissions(manage_emojis=True)
+    @app_commands.checks.has_permissions(manage_emojis=True)
     async def import_emote(self, interaction: discord.Interaction, name:str,url: str):
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
                     print(f"image could not be fetched, status: {response.status}")
-                    interaction.response.send_message(f"image could not be fetched",ephemeral=True)
+                    await interaction.response.send_message(f"image could not be fetched",ephemeral=True)
                     return
                 image = await response.read()
         emote = await interaction.channel.guild.create_custom_emoji(name=name, image=image)
@@ -28,7 +26,7 @@ class Emote(commands.Cog):
 
 
     @app_commands.command(name="copy",description="/copy name(emote name) desired_emote")
-    @commands.has_permissions(manage_emojis=True)
+    @app_commands.checks.has_permissions(manage_emojis=True)
     async def copy(self, interaction: discord.Interaction, name: str, emote:str):
         match = re.match(r"<(a?):(\w+):(\d+)>", emote)
         if not match:

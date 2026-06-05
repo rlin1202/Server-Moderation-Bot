@@ -5,10 +5,8 @@ import os
 
 from discord.ext import commands
 from dotenv import load_dotenv
-from connection import keep_alive
 from util.db import create_pool
 
-#keep_alive() #for hosting on render
 load_dotenv()
 
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
