@@ -16,11 +16,9 @@ class Moderation(commands.Cog):
     async def on_ready(self):
         print(f"logged in as {self.bot.user}")
 
-    #Add when user gets kicked we create a record in pg to keep track of information
-    #generate a id for the case, user_id, moderator_id, type of action, reason, and set expires at to NULL
     @app_commands.command(
         name="kick",
-        description="/kick @<user> reason(optional)"
+        description="kicks a user"
     )
     @app_commands.checks.has_permissions(kick_members=True)
     async def kick(self,interaction: discord.Interaction, member: discord.Member, *, reason: str = "None provided"):
@@ -43,7 +41,7 @@ class Moderation(commands.Cog):
             await interaction.response.send_message("ERROR: INAPPROPRIATE PERMISSIONS",ephemeral=True)
 
 
-    @app_commands.command(name="clear",description="/clear <message amount>")
+    @app_commands.command(name="clear",description="clears x amount of messages from a channel")
     @app_commands.checks.has_permissions(manage_messages=True)
     async def clear(self,interaction, amount: int):
         if amount < 1:
@@ -71,7 +69,7 @@ class Moderation(commands.Cog):
 
     @app_commands.command(
         name="timeout",
-        description="/timeout @<user> time(will default to 30 seconds) reason(optional)"
+        description="times out a user for x amount of days, hours, minutes, or seconds"
     )
     @app_commands.checks.has_permissions(moderate_members=True)
     async def timeout(self, interaction: discord.Interaction, member: discord.Member, amount: int = 30, unit: str = "seconds", reason: str = "None provided"):
@@ -111,7 +109,8 @@ class Moderation(commands.Cog):
                     interaction.user.id,
                     "TIMEOUT",
                     reason,
-                    time_out_until
+                    time_out_until,
+                    True
                 )
                 await interaction.followup.send(f"{member} has been timed out for {amount} {unit}. Reason: {reason}")
             except Exception as e:
@@ -120,7 +119,7 @@ class Moderation(commands.Cog):
 
     @app_commands.command(
         name="ban",
-        description="/ban @<user> amount(how long) unit(days or weeks defaults to permanent) reason(optional)"
+        description="/bans a user either permanently or temporary for x amount of days or weeks"
     )
     @app_commands.checks.has_permissions(ban_members=True)
     async def ban(self, interaction: discord.Interaction, member: discord.Member, amount:int = None, unit:str = None, reason: str = "None provided"):
@@ -153,7 +152,7 @@ class Moderation(commands.Cog):
         else:
             await interaction.response.send_message("ERROR: INAPPROPRIATE PERMISSIONS",ephemeral=True)
 
-    @app_commands.command(name="unban",description="/unban @<user> reason(optional)")
+    @app_commands.command(name="unban",description="unbans a user")
     @app_commands.checks.has_permissions(ban_members=True)
     async def unban(self, interaction: discord.Interaction, member_id: str):
 
@@ -162,7 +161,7 @@ class Moderation(commands.Cog):
         await interaction.guild.unban(user)
         await interaction.response.send_message(f"{user} has been unbanned")
 
-    @app_commands.command(name="change_welcome",description="change default channel")
+    @app_commands.command(name="change_welcome",description="changes default or welcome channel")
     @app_commands.checks.has_permissions(manage_channels=True)
     async def change_welcome(self,interaction: discord.Interaction, channel: discord.TextChannel):
 
@@ -176,6 +175,22 @@ class Moderation(commands.Cog):
         """
 
         await self.bot.db.execute(query,channel.id,interaction.guild.id)
+
+    @app_commands.command(name="warn", description="issues the user a warning for behaving")
+    @app_commands.checks.has_permissions(moderate_members=True)
+    async def warn(self, interaction: discord.Interaction, member: discord.Member, *, reason: str = "None Provided"):
+        if interaction.user.top_role > member.top_role:
+            await add_infraction(
+                self.bot.db,
+                member.id,
+                interaction.guild.id,
+                interaction.user.id,
+                "WARN",
+                reason
+            )
+            await interaction.response.send_message(f"{member.mention} has been issues a warning! Reason: {reason}")
+        else:
+            await interaction.response.send_message("ERROR: INAPPROPRIATE PERMISSIONS", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))

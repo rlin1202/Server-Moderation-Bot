@@ -16,9 +16,6 @@ class DiscordBot(commands.Bot):
         super().__init__(intents=discord.Intents.all(),command_prefix="!")
         self.db = None
 
-    #on start up we want to create that open connection and then go through the cogs folder and sync load all the commands
-
-
     async def setup_hook(self):
         self.db = await create_pool()
         # looks through the files in the cogs folder and returns a list of the filenames

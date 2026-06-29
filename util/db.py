@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-#creates a open connection to postgres and manually closes it when bots down
+
 async def create_pool():
     return await asyncpg.create_pool (
         user=os.getenv("DB_USER"),
@@ -15,7 +15,6 @@ async def create_pool():
         host=os.getenv("host")
     )
 
-#insert query example: INSERT into infractions (server_id, user_id, moderator_id, type, reason, created_at, expires_at)
 async def add_server_info(pool,server_id: int, welcome_channel: int):
     query = """
             INSERT INTO servers(
