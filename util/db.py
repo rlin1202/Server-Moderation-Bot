@@ -12,7 +12,7 @@ async def create_pool():
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PW"),
         database=os.getenv("DB"),
-        host=os.getenv("host")
+        host=os.getenv("HOST")
     )
 
 async def add_server_info(pool,server_id: int, welcome_channel: int):
