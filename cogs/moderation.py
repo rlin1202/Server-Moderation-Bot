@@ -122,7 +122,13 @@ class Moderation(commands.Cog):
         description="/bans a user either permanently or temporary for x amount of days or weeks"
     )
     @app_commands.checks.has_permissions(ban_members=True)
-    async def ban(self, interaction: discord.Interaction, member: discord.Member, amount:int = None, unit:str = None, reason: str = "None provided"):
+    async def ban(self, interaction: discord.Interaction,
+                  member: discord.Member,
+                  amount:int = None,
+                  unit:str = None,
+                  delete_history: int = 604800,
+                  reason: str = "None provided"
+    ):
         ban_until = None
         member_id = member.id
         if interaction.user.top_role > member.top_role:
@@ -134,7 +140,7 @@ class Moderation(commands.Cog):
                     ban_until = current_time + timedelta(weeks=amount)
             await interaction.response.defer()
             try:
-                await member.ban(reason=reason,delete_message_seconds=604800)
+                await member.ban(reason=reason,delete_message_seconds=delete_history)
                 await add_infraction(
                     self.bot.db,
                     member_id,
